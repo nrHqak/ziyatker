@@ -13,7 +13,7 @@ export function SiteFooter() {
         <Link href="/journal">JOURNAL</Link>
         <Link href="/#faq">FAQ</Link>
       </nav>
-      <span>@ziyatker.sc</span>
+      <Link className="footer-social" href="https://www.instagram.com/ziyatker.sc/" target="_blank" rel="noreferrer">@ziyatker.sc ↗</Link>
     </footer>
   );
 }

@@ -21,7 +21,7 @@ export default function JournalPage() {
           <article className={`archive-entry entry-${index + 1}`} key={post.slug}>
             <Link href={`/journal/${post.slug}`}>
               <div className="archive-image"><Image src={post.image} alt={post.imageAlt} fill sizes="(max-width: 760px) 90vw, 55vw" /></div>
-              <div className="archive-copy"><span>0{index + 1} / {post.category}</span><h2>{post.title}</h2><p>{post.excerpt}</p><b>READ ENTRY →</b></div>
+              <div className="archive-copy"><span>0{index + 1} / {post.category} / {post.date}</span><h2>{post.title}</h2><p>{post.description}</p><b>READ ENTRY →</b></div>
             </Link>
           </article>
         ))}

@@ -21,21 +21,28 @@ export type Initiative = {
   id: string;
   number: string;
   title: string;
-  problem: string;
-  change: string;
+  summary: string;
+  why: string;
+  studentBenefit: string;
   mechanism: string;
   audience: string;
+  status: string;
+};
+
+export type GradeImpactItem = {
+  category: string;
+  title: string;
+  description: string;
 };
 
 export type JournalPost = {
   slug: string;
   title: string;
   category: string;
-  excerpt: string;
+  date: string;
+  description: string;
   image: string;
   imageAlt: string;
-  body: string[];
-  quote?: string;
 };
 
 export const team: TeamMember[] = [
@@ -112,46 +119,56 @@ export const initiatives: Initiative[] = [
     id: "internships",
     number: "01",
     title: "INTERNSHIPS",
-    problem: "Career choices are difficult without seeing real work up close.",
-    change: "More opportunities to understand professions through practical exposure.",
+    summary: "Proposed professional exposure before students commit to a university direction.",
+    why: "Students often choose university directions without having seen the profession in a real working environment.",
+    studentBenefit: "Exposure to professional environments and a clearer understanding of possible career paths.",
     mechanism: "Pursue internship pathways with major organizations. Halyk Bank and BI Group are portfolio examples, not confirmed partnerships.",
     audience: "Students exploring future study and career directions.",
+    status: "Proposed initiative. No partner or placement is confirmed.",
   },
   {
     id: "educonnect",
     number: "02",
     title: "EDUCONNECT",
-    problem: "Students in rural schools do not always have equal access to academic support.",
-    change: "A student-to-student learning network across western Kazakhstan.",
+    summary: "A proposed student-to-student academic support network across western Kazakhstan.",
+    why: "Students in rural schools do not always have equal access to subject support and peer guidance.",
+    studentBenefit: "NIS volunteers gain teaching experience while rural-school students receive additional academic support.",
     mechanism: "NIS students would support rural-school students in mathematics, physics, and other academic subjects.",
     audience: "NIS volunteers and students in rural schools.",
+    status: "Proposed initiative; participation details are not yet published.",
   },
   {
     id: "care",
     number: "03",
     title: "ШЕКСІЗ ҚАМҚОРЛЫҚ",
-    problem: "Community support works best when it is regular and practical.",
-    change: "Consistent engagement with children’s homes and elderly care homes.",
+    summary: "A proposed framework for regular, practical community service.",
+    why: "Community support has more value when it is consistent, useful, and connected to real needs.",
+    studentBenefit: "Structured opportunities to contribute time, learning support, and basic digital-literacy help.",
     mechanism: "Proposed monthly visits, learning-material donation, EduConnect teaching, and basic digital-literacy support.",
     audience: "Student volunteers, children, and elderly community members.",
+    status: "Proposed initiative; frequency and host organizations are not yet confirmed.",
   },
   {
     id: "marathons",
     number: "04",
     title: "ACADEMIC MARATHONS",
-    problem: "Exam preparation is easier when students can learn from people who have already completed the process.",
-    change: "Focused peer and alumni guidance for major exams.",
+    summary: "Focused preparation sessions built around peer and alumni experience.",
+    why: "Exam preparation is easier when students can learn from people who have already completed the process.",
+    studentBenefit: "Exam-specific guidance, shared strategies, and a clearer view of preparation priorities.",
     mechanism: "Subject and exam marathons around МЭСК, IELTS, SAT, CSCA, and other relevant assessments.",
-    audience: "Students in grades 10, 11, and 12.",
+    audience: "Students in grades 10, 11, and 12, where relevant to each assessment.",
+    status: "Proposed initiative; subjects, dates, and eligibility are not yet published.",
   },
   {
     id: "ielts",
     number: "05",
     title: "IELTS / IDP",
-    problem: "Students need dependable preparation guidance and useful materials.",
-    change: "A stronger, more regular IELTS preparation pathway.",
+    summary: "A proposed pathway for more regular IELTS guidance and preparation resources.",
+    why: "Students need dependable preparation guidance and useful materials when planning for IELTS.",
+    studentBenefit: "More structured preparation guidance and access to useful learning materials.",
     mechanism: "Pursue recurring workshops and access to preparation materials with IDP IELTS Kazakhstan as a proposed direction.",
     audience: "Students preparing for IELTS.",
+    status: "Proposed initiative. Recurring cooperation with IDP IELTS Kazakhstan is not confirmed.",
   },
 ];
 
@@ -160,70 +177,43 @@ export const journalPosts: JournalPost[] = [
     slug: "meet-ziyatker",
     title: "Meet Ziyatker",
     category: "Team",
-    excerpt: "The campaign introduction: three students, three roles, one shared program for NIS Atyrau.",
+    date: "DATE NOT CONFIRMED",
+    description: "The campaign introduction: three students, three roles, one shared program for NIS Atyrau.",
     image: "/images/campaign/meet-ziyatker.png",
     imageAlt: "Meet Ziyatker campaign poster featuring Alfarabi, Alaziza, and Malika",
-    body: [
-      "ZIYATKER is Alaziza Lukpanova for President, Malika Zhakenova for Prime Minister, and Alfarabi Serik for Secretary.",
-      "Their campaign brings together documented experience in education, career guidance, clubs, debate, performance, and community work with a proposed program for 2026–2027.",
-    ],
-    quote: "ZIYATKER ekenindi Ūmytpa!",
-  },
-  {
-    slug: "active-break",
-    title: "Active Break",
-    category: "Campaign Activity",
-    excerpt: "A campaign activity built around movement, play, and a more energetic school break.",
-    image: "/images/campaign/active-break-crop.png",
-    imageAlt: "Active Break campaign collage with outdoor games and student activities",
-    body: [
-      "Active Break brought movement and shared play into the campaign’s visual language.",
-      "The supplied campaign artwork documents outdoor games and an invitation for students to join an active break together.",
-    ],
-  },
-  {
-    slug: "mesk-marathon",
-    title: "МЭСК Marathon",
-    category: "Academic Support",
-    excerpt: "A campaign post introducing a focused academic marathon for grade 10 students.",
-    image: "/images/campaign/mesk-marathon-crop.png",
-    imageAlt: "МЭСК Marathon campaign poster for grade 10 students",
-    body: [
-      "The МЭСК Marathon campaign post focused on grade 10 students and listed mathematics, history of Kazakhstan, Russian, Kazakh, language, and core subjects.",
-      "Academic and exam marathons are also part of ZIYATKER’s proposed 2026–2027 program for students in grades 10–12.",
-    ],
-  },
-  {
-    slug: "meme-brainrot",
-    title: "Meme or Brainrot?",
-    category: "Campaign Activity",
-    excerpt: "A playful 7–9 grade activity from the campaign’s social feed.",
-    image: "/images/campaign/meme-brainrot-crop.png",
-    imageAlt: "Meme or Brainrot campaign graphic for grades 7 to 9",
-    body: [
-      "The campaign used humor as one way to meet students where they are.",
-      "This supplied post documents a playful activity for grades 7–9 without adding claims or dates beyond the original graphic.",
-    ],
   },
   {
     slug: "vote-ziyatker",
     title: "Vote for Ziyatker",
     category: "Campaign Video",
-    excerpt: "A still from the campaign video: ‘The greatest students vote for Ziyatker.’",
+    date: "DATE NOT CONFIRMED",
+    description: "A still from the campaign video: ‘The greatest students vote for Ziyatker.’",
     image: "/images/campaign/vote-sign-video-thumbnail.png",
     imageAlt: "Student holding a pink sign that reads The greatest students vote for Ziyatker",
-    body: [
-      "This video thumbnail is part of the current campaign archive and is presented here as supplied.",
-      "Follow campaign updates through the official handle @ziyatker.sc.",
-    ],
   },
 ];
 
-export const gradeImpact: Record<string, string[]> = {
-  "7–9": ["Academic activities", "EduConnect participation", "Community initiatives"],
-  "10": ["МЭСК and academic preparation", "Career exposure", "Community initiatives"],
-  "11": ["IELTS and SAT preparation", "Internship pathways", "Alumni experience"],
-  "12": ["Exam analysis and alumni guidance", "Career exposure", "Community leadership"],
+export const gradeImpact: Record<string, GradeImpactItem[]> = {
+  "7–9": [
+    { category: "ACADEMIC PARTICIPATION", title: "Learn by joining in", description: "Take part in age-relevant academic activities and peer-led learning where places are available." },
+    { category: "EDUCONNECT", title: "A possible first teaching role", description: "Older students may later be able to support EduConnect; younger grades can see how the network works and prepare to contribute." },
+    { category: "COMMUNITY", title: "Practical care in action", description: "Join suitable school-community activities connected to the proposed Шексіз қамқорлық direction." },
+  ],
+  "10": [
+    { category: "ACADEMIC SUPPORT", title: "МЭСК and subject marathons", description: "Access focused preparation formats inspired by peer and alumni experience, if the proposed marathons proceed." },
+    { category: "CAREER ORIENTATION", title: "See possible directions earlier", description: "Career-guidance formats inspired by the team’s documented Career Fest experience could help students compare future paths." },
+    { category: "COMMUNITY", title: "Contribute with purpose", description: "Take part in practical volunteer activity through proposed community initiatives where appropriate." },
+  ],
+  "11": [
+    { category: "EXAM PREPARATION", title: "IELTS, SAT, and academic marathons", description: "Learn from structured peer and alumni guidance for relevant exams if the proposed sessions are launched." },
+    { category: "CAREER EXPOSURE", title: "Explore work before choosing", description: "Proposed company-exposure or internship pathways could help clarify university and career directions; no placement is guaranteed." },
+    { category: "GUIDANCE", title: "Use experience already earned", description: "Peer and alumni perspectives could make preparation choices more concrete and less isolated." },
+  ],
+  "12": [
+    { category: "APPLICATION EXPERIENCE", title: "Turn recent experience into guidance", description: "Share and access practical exam and application lessons through proposed peer and alumni formats." },
+    { category: "GUIDANCE", title: "Plan the next transition", description: "Use relevant peer and alumni perspectives to compare study and career directions." },
+    { category: "PROFESSIONAL EXPOSURE", title: "Connect plans to real work", description: "Proposed career and company-exposure formats could offer a clearer view of professional environments; availability is not confirmed." },
+  ],
 };
 
 export const faq = [

@@ -5,13 +5,13 @@ import { Timeline } from "@/components/ui/timeline";
 import { AskForm, FAQ, GradeImpact, InitiativesAccordion } from "@/components/sections/home-interactions";
 import { journalPosts, team } from "@/content/campaign";
 
-const campaignMedia = [
-  { src: "/images/campaign/meet-ziyatker.png", alt: "Meet Ziyatker campaign poster", className: "poster poster-one" },
-  { src: "/images/campaign/vote-sign-video-thumbnail.png", alt: "Vote for Ziyatker video thumbnail", className: "poster poster-two" },
-  { src: "/images/campaign/meme-brainrot-crop.png", alt: "Meme or Brainrot campaign post", className: "poster poster-three" },
-  { src: "/images/campaign/active-break-crop.png", alt: "Active Break campaign post", className: "poster poster-four" },
-  { src: "/images/campaign/mesk-marathon-crop.png", alt: "МЭСК Marathon campaign post", className: "poster poster-five" },
-];
+const teamPreviewOrder = ["malika", "alaziza", "alfarabi"];
+const teamPreview = teamPreviewOrder.map((id) => team.find((member) => member.id === id)!);
+const campaignMedia = journalPosts.map((post, index) => ({
+  src: post.image,
+  alt: post.imageAlt,
+  className: `poster poster-${index + 1}`,
+}));
 
 export default function HomePage() {
   return (
@@ -27,8 +27,7 @@ export default function HomePage() {
         background={<div className="portal-field" />}
         front={
           <div className="portal-front">
-            <p>ZIYATKER ekenindi Ūmytpa!</p>
-            <span>DIGITAL MANIFESTO · NIS ATYRAU</span>
+            <p lang="kk">екеніңді ұмытпа!</p>
           </div>
         }
       >
@@ -37,8 +36,8 @@ export default function HomePage() {
           <div className="team-hero-shade" />
           <span className="section-kicker">01 / THE TEAM</span>
           <h1 id="team-hero-title">THIS IS<br />ZIYATKER.</h1>
-          <div className="team-role-line">
-            <span>ALAZIZA — PRESIDENT</span><span>MALIKA — PRIME MINISTER</span><span>ALFARABI — SECRETARY</span>
+          <div className="team-role-line" aria-label="Team roles from left to right">
+            <span>ALFARABI — SECRETARY</span><span>ALAZIZA — PRESIDENT</span><span>MALIKA — PRIME MINISTER</span>
           </div>
         </section>
       </GlyphPortal>
@@ -48,7 +47,7 @@ export default function HomePage() {
         <h2 id="manifesto-title">WE DON&apos;T NEED<br />MORE PROMISES.<br /><em>WE NEED</em><br />OPPORTUNITIES.</h2>
         <div className="manifesto-copy">
           <p>ZIYATKER connects education, opportunity, community, and experience—grounding a proposed program in work the team has already done.</p>
-          <blockquote>Жарқын болашақты Мұра ету - Зияткерлікті талап етеді</blockquote>
+          <blockquote lang="kk">Жарқын болашақты мұра ету — зияткерлікті талап етеді.</blockquote>
         </div>
         <div className="keyword-row"><span>EDUCATION</span><span>OPPORTUNITY</span><span>COMMUNITY</span><span>EXPERIENCE</span></div>
       </section>
@@ -56,7 +55,7 @@ export default function HomePage() {
       <section className="impact-section" aria-labelledby="impact-title">
         <div className="section-heading">
           <span className="section-kicker">03 / WHAT CHANGES FOR YOU</span>
-          <h2 id="impact-title">СЕН ҮШІН<br />НЕ ӨЗГЕРЕДІ?</h2>
+          <h2 id="impact-title" lang="kk">СЕН ҮШІН<br />НЕ ӨЗГЕРЕДІ?</h2>
         </div>
         <GradeImpact />
       </section>
@@ -64,7 +63,7 @@ export default function HomePage() {
       <section className="initiatives-section paper-section" aria-labelledby="initiatives-title">
         <div className="section-heading wide-heading">
           <span className="section-kicker">04 / PROPOSED PROGRAM · 2026–2027</span>
-          <h2 id="initiatives-title">ZIYATKER - ӨЗГЕРІСКЕ<br />АЛҒАШҚЫ ҚАДАМ!</h2>
+          <h2 id="initiatives-title" lang="kk"><span lang="en">ZIYATKER —</span><br />ӨЗГЕРІСКЕ АЛҒАШҚЫ ҚАДАМ!</h2>
         </div>
         <InitiativesAccordion />
         <Link className="editorial-link" href="/program">EXPLORE THE FULL PROGRAM</Link>
@@ -92,8 +91,8 @@ export default function HomePage() {
           <h2 id="team-preview-title">MEET<br />ZIYATKER</h2>
         </div>
         <div className="team-editorial-grid">
-          {team.map((member) => (
-            <Link key={member.id} href={`/team#${member.id}`} className="team-preview-card">
+          {teamPreview.map((member) => (
+            <Link key={member.id} href={`/team#${member.id}`} className={`team-preview-card ${member.id === "alaziza" ? "is-president" : ""}`}>
               <div className="portrait-frame"><Image src={member.portrait} alt={`${member.name}, ${member.role}`} fill sizes="(max-width: 760px) 88vw, 33vw" style={{ objectPosition: member.imagePosition }} /></div>
               <div><span>{member.number} / {member.role.toUpperCase()}</span><h3>{member.firstName}<br />{member.lastName}</h3><b>VIEW PROFILE ↗</b></div>
             </Link>
@@ -115,7 +114,7 @@ export default function HomePage() {
       <section className="final-manifesto" aria-label="ZIYATKER final manifesto">
         <span>NIS ATYRAU<br />2026</span>
         <h2>ZIYATKER</h2>
-        <p>ekenindi Ūmytpa!</p>
+        <p lang="kk">екеніңді ұмытпа!</p>
       </section>
     </main>
   );

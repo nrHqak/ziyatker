@@ -20,12 +20,14 @@ export default function ProgramPage() {
             <div className="program-number">{initiative.number}</div>
             <div className="program-copy">
               <span>PROPOSED / NEXT</span>
-              <h2>{initiative.title}</h2>
+              <h2 lang={initiative.id === "care" ? "kk" : undefined}>{initiative.title}</h2>
+              <p className="program-summary">{initiative.summary}</p>
               <dl>
-                <div><dt>THE ISSUE</dt><dd>{initiative.problem}</dd></div>
-                <div><dt>PROPOSED CHANGE</dt><dd>{initiative.change}</dd></div>
+                <div><dt>WHY</dt><dd>{initiative.why}</dd></div>
+                <div><dt>WHAT STUDENTS GET</dt><dd>{initiative.studentBenefit}</dd></div>
                 <div><dt>HOW IT COULD WORK</dt><dd>{initiative.mechanism}</dd></div>
-                <div><dt>INTENDED FOR</dt><dd>{initiative.audience}</dd></div>
+                <div><dt>WHO IT IS FOR</dt><dd>{initiative.audience}</dd></div>
+                <div className="program-status"><dt>STATUS</dt><dd>{initiative.status}</dd></div>
               </dl>
             </div>
             <div className="program-index" aria-hidden="true">0{index + 1} / 05</div>

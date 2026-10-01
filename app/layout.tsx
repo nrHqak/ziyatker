@@ -1,7 +1,22 @@
 import type { Metadata, Viewport } from "next";
+import { Noto_Sans, Noto_Serif } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { HashScrollRestorer } from "@/components/layout/hash-scroll-restorer";
+
+const notoSans = Noto_Sans({
+  subsets: ["cyrillic", "latin"],
+  variable: "--font-noto-sans",
+  display: "swap",
+});
+
+const notoSerif = Noto_Serif({
+  subsets: ["cyrillic", "latin"],
+  style: ["normal", "italic"],
+  variable: "--font-noto-serif",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -32,12 +47,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${notoSans.variable} ${notoSerif.variable}`}>
       <body>
         <a className="skip-link" href="#main-content">Skip to content</a>
         <SiteHeader />
         {children}
         <SiteFooter />
+        <HashScrollRestorer />
       </body>
     </html>
   );

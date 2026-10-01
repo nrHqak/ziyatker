@@ -21,10 +21,6 @@ export function SiteHeader() {
 
   return (
     <header className="site-header">
-      <Link className="wordmark" href="/" aria-label="ZIYATKER home">
-        <span>ZIYATKER</span>
-        <small>NIS ATYRAU · 2026</small>
-      </Link>
       <nav className="desktop-nav" aria-label="Primary navigation">
         {links.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
       </nav>
@@ -40,7 +36,7 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <p>ZIYATKER ekenindi Ūmytpa!</p>
+        <p lang="kk">екеніңді ұмытпа!</p>
       </div>
     </header>
   );

@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const post = journalPosts.find((item) => item.slug === slug);
   if (!post) return {};
-  return { title: post.title, description: post.excerpt };
+  return { title: post.title, description: post.description };
 }
 
 export default async function JournalArticlePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -26,14 +26,14 @@ export default async function JournalArticlePage({ params }: { params: Promise<{
   return (
     <main id="main-content" className="inner-page article-page">
       <header className="article-header">
-        <span>JOURNAL / {post.category.toUpperCase()}</span>
+        <span>JOURNAL / {post.category.toUpperCase()} / {post.date}</span>
         <h1>{post.title}</h1>
-        <p>{post.excerpt}</p>
+        <p>{post.description}</p>
       </header>
       <figure className="article-hero"><Image src={post.image} alt={post.imageAlt} fill priority sizes="100vw" /></figure>
       <article className="article-body">
-        {post.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-        {post.quote && <blockquote>{post.quote}</blockquote>}
+        <p>For confirmed campaign updates, follow the official ZIYATKER account on Instagram.</p>
+        <p><Link href="https://www.instagram.com/ziyatker.sc/" target="_blank" rel="noreferrer">FOLLOW @ZIYATKER.SC ↗</Link></p>
       </article>
       <nav className="article-nav" aria-label="Journal entries">
         <Link href={`/journal/${previous.slug}`}><span>PREVIOUS</span>{previous.title}</Link>
