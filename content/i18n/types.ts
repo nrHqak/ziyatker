@@ -1,0 +1,70 @@
+export type Locale = "ru" | "kk" | "en";
+
+export type GradeImpactCopy = { category: string; title: string; description: string };
+export type InitiativeCopy = { title: string; summary: string; why: string; benefit: string; mechanism: string; audience: string; status: string };
+export type AchievementCopy = { project: string; role: string; action: string; impact: string };
+export type MemberCopy = { role: string; achievements: Record<string, AchievementCopy> };
+export type JournalPostCopy = { title: string; category: string; description: string };
+
+export type Messages = {
+  localeName: string;
+  nav: { home: string; program: string; team: string; journal: string; faq: string; menu: string; close: string; primaryLabel: string; mobileLabel: string; footerLabel: string };
+  common: { readEntry: string; previous: string; next: string; follow: string; skipToContent: string };
+  home: {
+    enter: string;
+    teamKicker: string;
+    teamHeroTitle: string;
+    rolesLabel: string;
+    manifestoKicker: string;
+    manifestoBody: string;
+    manifestoQuote: string;
+    keywords: string[];
+    impactKicker: string;
+    impactTitle: string;
+    chooseGrade: string;
+    gradeAria: string;
+    proposalNote: string;
+    programKicker: string;
+    programTitle: string;
+    programLink: string;
+    archiveKicker: string;
+    archiveTitle: string;
+    archiveNote: string;
+    meetKicker: string;
+    meetTitle: string;
+    viewProfile: string;
+    faqKicker: string;
+    faqTitle: string;
+    faqIntro: string;
+  };
+  gradeImpact: Record<string, GradeImpactCopy[]>;
+  fields: { why: string; benefit: string; mechanism: string; audience: string; status: string; role: string; action: string; impact: string };
+  initiatives: Record<string, InitiativeCopy>;
+  team: {
+    pageKicker: string;
+    pageTitle: string;
+    intro: string;
+    proofKicker: string;
+    proofTitle: string;
+    proofLabels: string[];
+    members: Record<string, MemberCopy>;
+  };
+  program: { pageKicker: string; pageTitle: string; intro: string; itemLabel: string };
+  journal: {
+    sectionKicker: string;
+    sectionTitle: string;
+    viewAll: string;
+    scrollBack: string;
+    scrollForward: string;
+    pageKicker: string;
+    pageTitle: string;
+    intro: string;
+    confirmedUpdates: string;
+    entriesLabel: string;
+    posts: Record<string, JournalPostCopy>;
+  };
+  faq: { items: Array<{ question: string; answer: string }> };
+  form: { name: string; grade: string; optional: string; question: string; submit: string; unavailable: string; unavailableBody: string };
+  footer: { school: string };
+  notFound: { kicker: string; title: string; link: string };
+};

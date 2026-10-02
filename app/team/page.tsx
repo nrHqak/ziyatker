@@ -1,52 +1,37 @@
-import type { Metadata } from "next";
+"use client";
+
 import Image from "next/image";
+import { useLanguage } from "@/components/i18n/language-provider";
 import { team } from "@/content/campaign";
 
-export const metadata: Metadata = {
-  title: "Team",
-  description: "Meet the ZIYATKER team and review their documented project experience.",
-};
-
 export default function TeamPage() {
+  const { t } = useLanguage();
+  const proofNumbers = ["400+", "15", "~20", "10"];
   return (
     <main id="main-content" className="inner-page team-page">
-      <header className="inner-hero">
-        <span>THE TEAM / NIS ATYRAU</span>
-        <h1>EXPERIENCE<br /><em>BEFORE</em><br />PROMISES.</h1>
-        <p>Three candidates. Documented work in education, clubs, debate, performance, and career guidance.</p>
-      </header>
+      <header className="inner-hero"><span>{t.team.pageKicker}</span><h1>{t.team.pageTitle.split("\n").map((line, index) => index === 1 ? <em key={line}>{line}</em> : <span key={line}>{line}</span>)}</h1><p>{t.team.intro}</p></header>
 
-      {team.map((member, index) => (
-        <section id={member.id} className={`profile-feature ${index % 2 ? "reverse" : ""}`} key={member.id}>
-          <div className="profile-image"><Image src={member.portrait} alt={`${member.name}, ${member.role}`} fill priority={index === 0} sizes="(max-width: 800px) 100vw, 48vw" style={{ objectPosition: member.imagePosition }} /></div>
-          <div className="profile-story">
-            <span>{member.number} / {member.role.toUpperCase()}</span>
-            <h2>{member.firstName}<br />{member.lastName}</h2>
-            <div className="evidence-list">
-              {member.achievements.map((achievement) => (
-                <article key={achievement.project}>
-                  <h3>{achievement.project}</h3>
-                  <dl>
-                    <div><dt>ROLE</dt><dd>{achievement.role}</dd></div>
-                    <div><dt>WHAT THEY DID</dt><dd>{achievement.action}</dd></div>
-                    <div><dt>IMPACT</dt><dd>{achievement.impact}</dd></div>
-                  </dl>
-                </article>
-              ))}
+      {team.map((member, index) => {
+        const memberCopy = t.team.members[member.id];
+        return (
+          <section id={member.id} className={`profile-feature ${index % 2 ? "reverse" : ""}`} key={member.id}>
+            <div className="profile-image"><Image src={member.portrait} alt={`${member.name}, ${memberCopy.role}`} fill priority={index === 0} sizes="(max-width: 800px) 100vw, 48vw" style={{ objectPosition: member.imagePosition }} /></div>
+            <div className="profile-story">
+              <span>{member.number} / {memberCopy.role.toUpperCase()}</span><h2>{member.firstName}<br />{member.lastName}</h2>
+              <div className="evidence-list">
+                {member.achievements.map((achievement) => {
+                  const copy = memberCopy.achievements[achievement.id];
+                  return <article key={achievement.id}><h3>{copy.project}</h3><dl><div><dt>{t.fields.role}</dt><dd>{copy.role}</dd></div><div><dt>{t.fields.action}</dt><dd>{copy.action}</dd></div><div><dt>{t.fields.impact}</dt><dd>{copy.impact}</dd></div></dl></article>;
+                })}
+              </div>
             </div>
-          </div>
-        </section>
-      ))}
+          </section>
+        );
+      })}
 
       <section className="proof-section" aria-labelledby="proof-title">
-        <span>DONE / PROOF</span>
-        <h2 id="proof-title">WORK YOU<br />CAN COUNT.</h2>
-        <div className="proof-grid">
-          <div><strong>400+</strong><p>Career Fest participants</p></div>
-          <div><strong>15</strong><p>Chess Club team members</p></div>
-          <div><strong>~20</strong><p>Chess tournament participants</p></div>
-          <div><strong>10</strong><p>Wave team members</p></div>
-        </div>
+        <span>{t.team.proofKicker}</span><h2 id="proof-title">{t.team.proofTitle.split("\n").map((line) => <span key={line}>{line}</span>)}</h2>
+        <div className="proof-grid">{proofNumbers.map((number, index) => <div key={number}><strong>{number}</strong><p>{t.team.proofLabels[index]}</p></div>)}</div>
       </section>
     </main>
   );

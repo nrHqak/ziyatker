@@ -4,6 +4,8 @@ import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { HashScrollRestorer } from "@/components/layout/hash-scroll-restorer";
+import { LanguageProvider } from "@/components/i18n/language-provider";
+import { LocalizedSkipLink } from "@/components/i18n/localized-skip-link";
 
 const notoSans = Noto_Sans({
   subsets: ["cyrillic", "latin"],
@@ -47,13 +49,15 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${notoSans.variable} ${notoSerif.variable}`}>
+    <html lang="ru" className={`${notoSans.variable} ${notoSerif.variable}`}>
       <body>
-        <a className="skip-link" href="#main-content">Skip to content</a>
-        <SiteHeader />
-        {children}
-        <SiteFooter />
-        <HashScrollRestorer />
+        <LanguageProvider>
+          <LocalizedSkipLink />
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+          <HashScrollRestorer />
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -1,38 +1,24 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useLanguage } from "@/components/i18n/language-provider";
 import { initiatives } from "@/content/campaign";
 
-export const metadata: Metadata = {
-  title: "Program",
-  description: "Explore ZIYATKER’s five proposed initiative areas for the 2026–2027 year.",
-};
-
 export default function ProgramPage() {
+  const { t } = useLanguage();
   return (
     <main id="main-content" className="inner-page program-page">
-      <header className="inner-hero program-hero">
-        <span>PROPOSED PROGRAM / 2026–2027</span>
-        <h1>FIVE WAYS<br />TO MOVE<br /><em>FORWARD.</em></h1>
-        <p>These initiatives are proposed directions—not completed guarantees. Partnership examples remain intentions unless formally confirmed.</p>
-      </header>
+      <header className="inner-hero program-hero"><span>{t.program.pageKicker}</span><h1>{t.program.pageTitle.split("\n").map((line, index) => index === 2 ? <em key={line}>{line}</em> : <span key={line}>{line}</span>)}</h1><p>{t.program.intro}</p></header>
       <div className="program-list">
-        {initiatives.map((initiative, index) => (
-          <section id={initiative.id} className="program-item" key={initiative.id}>
+        {initiatives.map((initiative, index) => {
+          const copy = t.initiatives[initiative.id];
+          return <section id={initiative.id} className="program-item" key={initiative.id}>
             <div className="program-number">{initiative.number}</div>
-            <div className="program-copy">
-              <span>PROPOSED / NEXT</span>
-              <h2 lang={initiative.id === "care" ? "kk" : undefined}>{initiative.title}</h2>
-              <p className="program-summary">{initiative.summary}</p>
-              <dl>
-                <div><dt>WHY</dt><dd>{initiative.why}</dd></div>
-                <div><dt>WHAT STUDENTS GET</dt><dd>{initiative.studentBenefit}</dd></div>
-                <div><dt>HOW IT COULD WORK</dt><dd>{initiative.mechanism}</dd></div>
-                <div><dt>WHO IT IS FOR</dt><dd>{initiative.audience}</dd></div>
-                <div className="program-status"><dt>STATUS</dt><dd>{initiative.status}</dd></div>
-              </dl>
+            <div className="program-copy"><span>{t.program.itemLabel}</span><h2 lang={initiative.id === "care" ? "kk" : undefined}>{copy.title}</h2><p className="program-summary">{copy.summary}</p>
+              <dl><div><dt>{t.fields.why}</dt><dd>{copy.why}</dd></div><div><dt>{t.fields.benefit}</dt><dd>{copy.benefit}</dd></div><div><dt>{t.fields.mechanism}</dt><dd>{copy.mechanism}</dd></div><div><dt>{t.fields.audience}</dt><dd>{copy.audience}</dd></div><div className="program-status"><dt>{t.fields.status}</dt><dd>{copy.status}</dd></div></dl>
             </div>
-            <div className="program-index" aria-hidden="true">0{index + 1} / 05</div>
-          </section>
-        ))}
+            <div className="program-index" aria-hidden="true">{String(index + 1).padStart(2, "0")} / 05</div>
+          </section>;
+        })}
       </div>
     </main>
   );
