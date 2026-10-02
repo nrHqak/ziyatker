@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useLanguage } from "@/components/i18n/language-provider";
-import { initiatives } from "@/content/campaign";
+import { homepageInitiativeIds, initiatives } from "@/content/campaign";
+
+const homepageInitiatives = homepageInitiativeIds.map((id) => initiatives.find((initiative) => initiative.id === id)!);
 
 export function GradeImpact() {
   const grades = ["7–9", "10", "11", "12"];
@@ -42,17 +44,17 @@ export function GradeImpact() {
 }
 
 export function InitiativesAccordion() {
-  const [open, setOpen] = useState(initiatives[0].id);
+  const [open, setOpen] = useState(homepageInitiatives[0].id);
   const { t } = useLanguage();
   return (
     <div className="initiative-list">
-      {initiatives.map((initiative) => {
+      {homepageInitiatives.map((initiative, index) => {
         const active = open === initiative.id;
         const copy = t.initiatives[initiative.id];
         return (
           <article className={active ? "is-open" : ""} key={initiative.id}>
             <button type="button" onClick={() => setOpen(active ? "" : initiative.id)} aria-expanded={active} aria-controls={`initiative-${initiative.id}`}>
-              <span>{initiative.number}</span><h3 lang={initiative.id === "care" ? "kk" : undefined}>{copy.title}</h3><span>{active ? "−" : "+"}</span>
+              <span>{String(index + 1).padStart(2, "0")}</span><h3 lang={initiative.id === "care" ? "kk" : undefined}>{copy.title}</h3><span>{active ? "−" : "+"}</span>
             </button>
             <div id={`initiative-${initiative.id}`} className="initiative-details" hidden={!active}>
               <dl>
@@ -60,7 +62,6 @@ export function InitiativesAccordion() {
                 <div><dt>{t.fields.benefit}</dt><dd>{copy.benefit}</dd></div>
                 <div><dt>{t.fields.mechanism}</dt><dd>{copy.mechanism}</dd></div>
                 <div><dt>{t.fields.audience}</dt><dd>{copy.audience}</dd></div>
-                <div className="initiative-status"><dt>{t.fields.status}</dt><dd>{copy.status}</dd></div>
               </dl>
             </div>
           </article>

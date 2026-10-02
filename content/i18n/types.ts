@@ -3,7 +3,8 @@ export type Locale = "ru" | "kk" | "en";
 export type GradeImpactCopy = { category: string; title: string; description: string };
 export type InitiativeCopy = { title: string; summary: string; why: string; benefit: string; mechanism: string; audience: string; status: string };
 export type AchievementCopy = { project: string; role: string; action: string; impact: string };
-export type MemberCopy = { role: string; achievements: Record<string, AchievementCopy> };
+export type MetricCopy = { label: string; shortLabel: string };
+export type MemberCopy = { role: string; achievements: Record<string, AchievementCopy>; metrics?: Record<string, MetricCopy> };
 export type JournalPostCopy = { title: string; category: string; description: string };
 
 export type Messages = {
@@ -47,9 +48,11 @@ export type Messages = {
     proofKicker: string;
     proofTitle: string;
     proofLabels: string[];
+    leadershipKicker: string;
+    leadershipTitle: string;
     members: Record<string, MemberCopy>;
   };
-  program: { pageKicker: string; pageTitle: string; intro: string; itemLabel: string };
+  program: { pageKicker: string; pageTitle: string; intro: string; itemLabel: string; groups: Record<string, string> };
   journal: {
     sectionKicker: string;
     sectionTitle: string;

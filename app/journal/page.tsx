@@ -9,8 +9,8 @@ export default function JournalPage() {
   const { t } = useLanguage();
   return (
     <main id="main-content" className="inner-page journal-page">
-      <header className="inner-hero journal-hero"><span>{t.journal.pageKicker}</span><h1>{t.journal.pageTitle.split("\n").map((line, index) => index === 1 ? <em key={line}>{line}</em> : <span key={line}>{line}</span>)}</h1><p>{t.journal.intro}</p></header>
-      <div className="journal-archive">
+      <header className="inner-hero journal-hero" data-nav-theme="dark"><span>{t.journal.pageKicker}</span><h1>{t.journal.pageTitle.split("\n").map((line, index) => index === 1 ? <em key={line}>{line}</em> : <span key={line}>{line}</span>)}</h1><p>{t.journal.intro}</p></header>
+      <div className="journal-archive" data-nav-theme="light">
         {journalPosts.map((post, index) => {
           const copy = t.journal.posts[post.slug];
           const meta = [copy.category, post.date, post.time, post.location].filter(Boolean).join(" / ");

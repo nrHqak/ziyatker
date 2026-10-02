@@ -10,6 +10,7 @@ import { useLanguage } from "@/components/i18n/language-provider";
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [hash, setHash] = useState("");
+  const [navTheme, setNavTheme] = useState<"dark" | "light">("dark");
   const pathname = usePathname();
   const { t } = useLanguage();
   const links = [
@@ -32,8 +33,27 @@ export function SiteHeader() {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-nav-theme]"));
+    if (!sections.length) return;
+
+    const updateTheme = () => {
+      const sampleY = Math.min(window.innerHeight - 1, 84);
+      const active = sections.findLast((section) => section.getBoundingClientRect().top <= sampleY && section.getBoundingClientRect().bottom > sampleY)
+        ?? sections.find((section) => section.getBoundingClientRect().bottom > sampleY)
+        ?? sections.at(-1);
+      setNavTheme(active?.dataset.navTheme === "light" ? "light" : "dark");
+    };
+
+    const observer = new IntersectionObserver(updateTheme, { rootMargin: "-72px 0px -78% 0px", threshold: [0, 1] });
+    sections.forEach((section) => observer.observe(section));
+    updateTheme();
+    window.addEventListener("resize", updateTheme);
+    return () => { observer.disconnect(); window.removeEventListener("resize", updateTheme); };
+  }, [pathname]);
+
   return (
-    <header className="site-header">
+    <header className="site-header" data-theme={navTheme}>
       <nav className="desktop-nav" aria-label={t.nav.primaryLabel}>
         <div className="desktop-nav-links">
           {links.map((link) => <Link key={link.href} href={link.href} className={link.active ? "is-active" : ""}>{link.label}</Link>)}

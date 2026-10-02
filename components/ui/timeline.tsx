@@ -17,8 +17,20 @@ export function Timeline({ items }: { items: JournalPost[] }) {
     viewport.scrollBy({ left: direction * viewport.clientWidth * 0.82, behavior: "smooth" });
   }
 
+  function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
+    const viewport = viewportRef.current;
+    if (!viewport || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    const movingForward = event.deltaY > 0;
+    const atStart = viewport.scrollLeft <= 0;
+    const atEnd = viewport.scrollLeft + viewport.clientWidth >= viewport.scrollWidth - 1;
+    if ((movingForward && !atEnd) || (!movingForward && !atStart)) {
+      event.preventDefault();
+      viewport.scrollLeft += event.deltaY;
+    }
+  }
+
   return (
-    <section id="journal-preview" className="journal-timeline" aria-labelledby="journal-heading">
+    <section id="journal-preview" className="journal-timeline" data-nav-theme="dark" aria-labelledby="journal-heading">
       <div className="timeline-layout">
         <div className="timeline-heading">
           <span>{t.journal.sectionKicker}</span>
@@ -29,7 +41,7 @@ export function Timeline({ items }: { items: JournalPost[] }) {
             <button type="button" onClick={() => scroll(1)} aria-label={t.journal.scrollForward}><ArrowRight aria-hidden="true" /></button>
           </div>
         </div>
-        <div ref={viewportRef} className="timeline-viewport">
+        <div ref={viewportRef} className="timeline-viewport" onWheel={handleWheel}>
           <div className="timeline-track">
             {items.map((item, index) => {
               const copy = t.journal.posts[item.slug];

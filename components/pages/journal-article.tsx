@@ -15,9 +15,9 @@ export function JournalArticle({ slug }: { slug: string }) {
   const meta = [copy.category, post.date, post.time, post.location].filter(Boolean).join(" / ");
   return (
     <main id="main-content" className="inner-page article-page">
-      <header className="article-header"><span>JOURNAL / {meta}</span><h1>{copy.title}</h1><p>{copy.description}</p></header>
-      <figure className="article-hero"><Image src={post.image} alt={post.imageAlt} fill priority sizes="100vw" /></figure>
-      <article className="article-body"><p>{t.journal.confirmedUpdates}</p><p><Link href="https://www.instagram.com/ziyatker.sc/" target="_blank" rel="noreferrer">{t.common.follow}</Link></p></article>
+      <header className="article-header" data-nav-theme="light"><span>JOURNAL / {meta}</span><h1>{copy.title}</h1><p>{copy.description}</p></header>
+      <figure className="article-hero" data-nav-theme="light"><Image src={post.image} alt={post.imageAlt} fill priority sizes="100vw" /></figure>
+      <article className="article-body" data-nav-theme="light"><p>{t.journal.confirmedUpdates}</p><p><Link href="https://www.instagram.com/ziyatker.sc/" target="_blank" rel="noreferrer">{t.common.follow}</Link></p></article>
       <nav className="article-nav" aria-label={t.journal.entriesLabel}>
         <Link href={`/journal/${previous.slug}`}><span>{t.common.previous}</span>{t.journal.posts[previous.slug].title}</Link>
         <Link href={`/journal/${next.slug}`}><span>{t.common.next}</span>{t.journal.posts[next.slug].title}</Link>
