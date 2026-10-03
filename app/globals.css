@@ -323,7 +323,7 @@ img { display: block; }
 }
 
 @media (max-width: 759px) {
-  .portal-front { padding-top: clamp(7.5rem, 23vh, 11rem); }
+  .portal-front { padding-top: clamp(5.5rem, 16vh, 8rem); }
   .portal-front p { font-size: clamp(2rem, 8vw, 3rem); }
   .team-hero h1 { top: 5.6rem; max-width: 8.5ch; font-size: clamp(3.35rem, 15vw, 5.2rem); line-height: .76; }
   .mobile-menu { align-content: start; padding-top: 5.5rem; }

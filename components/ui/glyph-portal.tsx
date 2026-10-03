@@ -18,8 +18,6 @@ export type GlyphPortalProps = {
   word?: string;
   /** First matching character. Omit to choose the largest safe patch of ink. */
   focusChar?: string;
-  /** Hover, tap, or use arrow keys to choose a letter before scrolling. */
-  interactive?: boolean;
   /** Decorative, inert, mounted once. Fill its parent with an image, video, or canvas. */
   background?: ReactNode;
   /** Optional foreground composition for the opening frame, above the clipped scene. */
@@ -44,7 +42,6 @@ const smooth = (a: number, b: number, n: number) => {
 };
 const DEFAULT_FONT = '"Arial Black", "Arial", sans-serif';
 type Ink = { x: number; y: number; radius: number; index: number };
-type Letter = { index: number; x: number; y: number; width: number; height: number };
 
 /** Largest opaque square, in linear time. Unlike a stem guess, it works in O, S and Ø. */
 function interior(context: CanvasRenderingContext2D, char: string, font: string): Omit<Ink, "index"> | null {
@@ -87,7 +84,7 @@ function scrollParent(element: HTMLElement): HTMLElement | null {
 }
 
 export default function GlyphPortal({
-  word = "ZIYATKER", focusChar, interactive = true, background, front, children, scrollLength = 2.4,
+  word = "ZIYATKER", focusChar, background, front, children, scrollLength = 2.4,
   fontFamily = DEFAULT_FONT, fontWeight = 900, annotations = false,
   enterLabel = "Enter section", className, style, onProgress,
 }: GlyphPortalProps) {
@@ -97,11 +94,6 @@ export default function GlyphPortal({
   const progressRef = useRef(onProgress);
   useLayoutEffect(() => { progressRef.current = onProgress; }, [onProgress]);
   const text = word.trim().normalize("NFC") || "ZIYATKER";
-  let characterOffset = 0;
-  const characters = Array.from(text, (char) => {
-    const index = characterOffset; characterOffset += char.length;
-    return { char, index };
-  });
   const length = Number.isFinite(scrollLength) ? clamp(scrollLength, 1, 8) : 2.4;
   const weight = Number.isFinite(fontWeight) ? clamp(fontWeight, 1, 1000) : 900;
   const hasFront = front != null;
@@ -115,9 +107,6 @@ export default function GlyphPortal({
     const clip = section.querySelector<SVGClipPathElement>(`#${clipId}`)!;
     const glyph = section.querySelector<SVGTextElement>("[data-gp-glyph]")!;
     const marks = section.querySelector<SVGGElement>("[data-gp-marks]")!;
-    const choices = section.querySelector<HTMLElement>("[data-gp-choices]")!;
-    const buttons = Array.from(choices.querySelectorAll<HTMLButtonElement>("button"));
-    const picker = section.querySelector<HTMLSelectElement>("[data-gp-select]")!;
     const root = scrollParent(section);
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const canvas = document.createElement("canvas");
@@ -128,8 +117,7 @@ export default function GlyphPortal({
     let W = 1, H = 1, travel = 1, startScale = 1, endScale = 1;
     let center = { x: 0, y: 0 }, target: Ink | null = null;
     let lastProgress = -1;
-    let candidates: Ink[] = [], letters: Letter[] = [];
-    let choosing = false;
+    let candidates: Ink[] = [];
     let bounds = { x: 0, y: 0, width: 1, height: 1 };
     let fontDirty = true;
     // Freeze an available face for this mount. Late font swaps move the ink under the camera.
@@ -161,13 +149,9 @@ export default function GlyphPortal({
       center = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 };
       const requested = focusChar ? text.indexOf(focusChar.normalize("NFC")) : -1;
       let offset = 0;
-      candidates = []; letters = [];
+      candidates = [];
       for (const char of Array.from(text)) {
         context.font = `${font.fontWeight} 100px ${font.fontFamily}`;
-        const m = context.measureText(char);
-        letters.push({ index: offset, x: advances[offset] - m.actualBoundingBoxLeft,
-          y: -m.actualBoundingBoxAscent, width: m.actualBoundingBoxLeft + m.actualBoundingBoxRight,
-          height: m.actualBoundingBoxAscent + m.actualBoundingBoxDescent });
         const found = interior(context, char, scanFont);
         if (found) candidates.push({ ...found, x: found.x + advances[offset], index: offset });
         offset += char.length;
@@ -181,14 +165,6 @@ export default function GlyphPortal({
       endScale = target ? Math.max(startScale, Math.hypot(W, H) / (target.radius * 1.35)) : startScale;
       section.dataset.gpFocus = target ? Array.from(text.slice(target.index))[0] : "";
       section.dataset.gpFocusIndex = String(target?.index ?? -1);
-      for (const button of buttons) {
-        const selected = Number(button.dataset.gpLetter) === target?.index;
-        button.disabled = !candidates.some((candidate) => candidate.index === Number(button.dataset.gpLetter));
-        button.setAttribute("aria-checked", String(selected));
-        button.tabIndex = selected ? 0 : -1;
-      }
-      if (picker.value !== "") picker.value = String(target?.index ?? -1);
-      for (const option of Array.from(picker.options)) option.disabled = option.value === "" || !candidates.some((candidate) => candidate.index === Number(option.value));
       const u = 1 / startScale;
       const y = bounds.y + bounds.height + 25 * u;
       const x = bounds.x;
@@ -223,9 +199,6 @@ export default function GlyphPortal({
       glyph.setAttribute("transform", `translate(${Math.cos(radians) * dx + Math.sin(radians) * dy - cx} ${-Math.sin(radians) * dx + Math.cos(radians) * dy - cy})`);
       marks.setAttribute("transform", transform);
       marks.style.opacity = String(1 - smooth(0.015, 0.17, p));
-      choosing = interactive && !isStatic && p < .04;
-      choices.inert = !choosing;
-      section.dataset.gpChoosing = String(choosing);
       // Drop the clip only after the camera has already filled the viewport with ink.
       field.style.clipPath = t >= 1 ? "none" : `url(#${clipId})`;
       section.style.setProperty("--gp-caption", String(1 - smooth(0.01, 0.16, p)));
@@ -253,17 +226,6 @@ export default function GlyphPortal({
       startScale = Math.min(W * 0.84 / bounds.width, wordHeight / bounds.height);
       // The whole viewport fits inside measured ink, even with the small camera bank.
       select(target);
-      for (const button of buttons) {
-        const letter = letters.find((item) => item.index === Number(button.dataset.gpLetter))!;
-        Object.assign(button.style, {
-          left: `${W / 2 + (letter.x - center.x) * startScale}px`,
-          top: `${H * .46 + (letter.y - center.y) * startScale - Math.max(0, 44 - letter.height * startScale) / 2}px`,
-          width: `${Math.max(1, letter.width * startScale)}px`,
-          height: `${Math.max(44, letter.height * startScale)}px`,
-        });
-      }
-      section.style.setProperty("--gp-word-top", `${H * .46 - bounds.height * startScale / 2}px`);
-      section.style.setProperty("--gp-word-bottom", `${H * .46 + bounds.height * startScale / 2}px`);
       section.dataset.gpReady = "true";
       section.dataset.gpMotion = !motion.matches && browserFrameSeen && !stalled && target ? "on" : "off";
 
@@ -281,31 +243,6 @@ export default function GlyphPortal({
     const schedule = () => { if (!raf && active) raf = requestAnimationFrame(frame); };
     const resize = () => { cancelAnimationFrame(raf); dirty = true; frame(); };
     const scroll = () => schedule();
-    const choose = (event: Event) => {
-      if (!choosing || position() >= .04) return;
-      const button = (event.target as Element).closest<HTMLButtonElement>("[data-gp-letter]");
-      const next = candidates.find((candidate) => candidate.index === Number(button?.dataset.gpLetter));
-      if (!next || next === target) return;
-      select(next); paint(position());
-    };
-    const navigate = (event: KeyboardEvent) => {
-      if (!choosing || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
-      event.preventDefault();
-      const current = candidates.indexOf(target!);
-      const index = event.key === "Home" ? 0 : event.key === "End" ? candidates.length - 1
-        : (current + (event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1) + candidates.length) % candidates.length;
-      buttons.find((button) => Number(button.dataset.gpLetter) === candidates[index].index)?.focus({ preventScroll: true });
-    };
-    const pick = () => {
-      if (!choosing || position() >= .04) return;
-      const next = candidates.find((candidate) => candidate.index === Number(picker.value));
-      if (next) { select(next); paint(position()); }
-    };
-    choices.addEventListener("pointerover", choose);
-    choices.addEventListener("click", choose);
-    choices.addEventListener("focusin", choose);
-    choices.addEventListener("keydown", navigate);
-    picker.addEventListener("change", pick);
     const observer = new ResizeObserver(resize);
     observer.observe(section);
     if (root) observer.observe(root);
@@ -332,13 +269,8 @@ export default function GlyphPortal({
       window.removeEventListener("resize", resize);
       window.visualViewport?.removeEventListener("resize", resize);
       motion.removeEventListener("change", resize);
-      choices.removeEventListener("pointerover", choose);
-      choices.removeEventListener("click", choose);
-      choices.removeEventListener("focusin", choose);
-      choices.removeEventListener("keydown", navigate);
-      picker.removeEventListener("change", pick);
     };
-  }, [text, focusChar, interactive, fontFamily, weight, length, clipId, hasFront]);
+  }, [text, focusChar, fontFamily, weight, length, clipId, hasFront]);
 
   return (
     <section ref={sectionRef} id={uid} className={className} aria-label={text}
@@ -351,16 +283,6 @@ export default function GlyphPortal({
         ${q}[data-gp-ready] [data-gp-field]{opacity:1;}
         ${q} [data-gp-art]{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;}
         ${q} [data-gp-marks]{fill:none;stroke:var(--gp-ink);opacity:.6;}
-        ${q} [data-gp-choices]{position:absolute;inset:0;visibility:hidden;pointer-events:none;}
-        ${q}[data-gp-choosing=true] [data-gp-choices]{visibility:visible;}
-        ${q} [data-gp-letter]{box-sizing:border-box;position:absolute;border:0;padding:0;margin:0;background:transparent;cursor:pointer;pointer-events:auto;touch-action:pan-y;}
-        ${q} [data-gp-letter]:disabled{pointer-events:none;}
-        ${q} [data-gp-letter]:focus-visible{outline:2px solid var(--gp-field);outline-offset:5px;}
-        ${q} [data-gp-touch-picker]{display:none;position:absolute;top:calc(var(--gp-word-bottom,50%) + 42px);left:50%;transform:translateX(-50%);font:12px/1.4 Arial,sans-serif;align-items:center;gap:12px;visibility:hidden;}
-        ${q}[data-gp-choosing=true] [data-gp-touch-picker]{visibility:visible;}
-        ${q} [data-gp-select]{min-height:44px;min-width:90px;border:1px solid #d8deda;border-radius:4px;background:var(--gp-paper);color:var(--gp-ink);padding:0 10px;font:inherit;}
-        ${q} [data-gp-select]:focus-visible{outline:2px solid var(--gp-field);outline-offset:4px;}
-        @media(any-pointer:coarse){${q} [data-gp-touch-picker]{display:flex;}}
         ${q} [data-gp-fallback]{position:absolute;inset:0;display:none;place-items:center;font-size:min(calc(100cqw / var(--gp-characters)),38cqh);line-height:1;color:var(--gp-field);}
         ${q}[data-gp-ready] [data-gp-fallback]{visibility:hidden;}
         ${q} [data-gp-caption]{position:absolute;inset:auto 8% 9%;display:flex;align-items:center;justify-content:space-between;gap:1rem;font:12px/1.4 Arial,sans-serif;opacity:var(--gp-caption,1);pointer-events:var(--gp-caption-hit,auto);}
@@ -401,17 +323,10 @@ export default function GlyphPortal({
           </defs>
           <g data-gp-marks style={{ visibility: annotations ? "visible" : "hidden" }}><path /></g>
         </svg>
-        <div data-gp-choices role="radiogroup" aria-label="Choose the letter to enter through" inert>
-          {characters.map(({ char, index }, i) => <button type="button" role="radio" aria-checked="false" tabIndex={-1} data-gp-letter={index} key={index} aria-label={`${char}, letter ${i + 1} of ${characters.length}`} />)}
-        </div>
-        <label data-gp-touch-picker><span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clipPath: "inset(50%)" }}>Entry letter</span><select data-gp-select defaultValue="">
-          <option value="" disabled>Choose a letter</option>
-          {characters.map(({ char, index }, i) => <option key={index} value={index}>{i + 1} · {char}</option>)}
-        </select></label>
         {front && <div data-gp-front>{front}</div>}
         <span data-gp-fallback aria-hidden="true" style={{ fontFamily, fontWeight: weight }}>{text}</span>
         <div data-gp-caption>
-          <span data-gp-hint aria-hidden="true">{interactive ? "Scroll to enter." : annotations ? "A passage through type" : ""}</span>
+          <span data-gp-hint aria-hidden="true">{annotations ? "A passage through type" : "Scroll to enter."}</span>
           <a data-gp-enter href={`#${uid}-content`}>{enterLabel}<span aria-hidden="true">↘</span></a>
         </div>
       </div>
@@ -421,4 +336,3 @@ export default function GlyphPortal({
     </section>
   );
 }
-

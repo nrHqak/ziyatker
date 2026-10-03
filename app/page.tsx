@@ -21,7 +21,7 @@ export default function HomePage() {
   return (
     <main id="main-content">
       <div id="home" className="home-anchor">
-        <GlyphPortal word="ZIYATKER" focusChar="A" interactive scrollLength={2.35} enterLabel={t.home.enter} className="ziyatker-portal" style={{ "--gp-paper": "#063e2d", "--gp-ink": "#dfff21", "--gp-field": "#dfff21", "--gp-foreground": "#fafaf7" }} background={<div className="portal-field" />} front={<div className="portal-front"><p lang="kk">екеніңді ұмытпа!</p></div>}>
+        <GlyphPortal word="ZIYATKER" focusChar="A" scrollLength={2.35} enterLabel={t.home.enter} className="ziyatker-portal" style={{ "--gp-paper": "#063e2d", "--gp-ink": "#dfff21", "--gp-field": "#dfff21", "--gp-foreground": "#fafaf7" }} background={<div className="portal-field" />} front={<div className="portal-front"><p lang="kk">екеніңді ұмытпа!</p></div>}>
           <section id="team-intro" className="team-hero" data-nav-theme="dark" aria-labelledby="team-hero-title">
             <Image src="/images/team/team-school.png" alt="Alfarabi, Alaziza, and Malika standing in front of NIS Atyrau" fill priority sizes="100vw" />
             <div className="team-hero-shade" />
